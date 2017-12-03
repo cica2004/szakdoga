@@ -5,36 +5,35 @@
 % helyét. És annak a helynek az értékeit írom a kimenetbe ami a legkisebb
 % relatív hibát okozza.
 
-%  clear all;
-load('2012_bemet+kimenet.mat');
-% Az adatokat napi bontásban szeretném vizsgálni
-% így minden adatot egy 24 oszlopból álló mátrixba teszek
-Ar1=reshape(Av2012,24,366); % A reshape mûködése miatt elsõnek a 24 hosszú sorokat készítek
-                            % azért lesz 366 a másik paraméter mert 2012
-                            % szökõév
-                            % size(Av2012, 1) / 24 = 366
-Ar1=Ar1';           % Az Av2012 jó árakat tartalmazza, elvárt kimenetet
-Br1=reshape(Br,24,366);             % Br = Bruttó hazai áram termelés
+hossz = size(arak_without_nan,1);
+Ar1=reshape(arak_without_nan, 24, hossz/24);             
+Ar1=Ar1';
+ellenorzes = reshape(Ar1', hossz, 1);
+Br1=reshape(RendszerTerheles, 24, hossz/24);             
 Br1=Br1';
-SK1=reshape(SK,24,366);             % SK = Szolvákia felöl átfolyó áram
+SK1=reshape(HUSKmeres_without_nan, 24, hossz/24);             
 SK1=SK1';
-nap=reshape(napok,24,366);          % Készítettem egy napok vectort amiben
-                                    % az aktuális naphoz tartozó érték azt
-                                    % mutatja meg hogy milyen fajta nap
-                                    % 1=hétfõ, 2=kedd ... 7=vasárnap
-                                    % Az ünnepnapok= 
-                                    % szombatimunkanap=
-                                    % pluszszabadnap=
+UK1=reshape(HUUKmeres_without_nan, 24, hossz/24);             
+UK1=UK1';
+AT1=reshape(HUATmeres_without_nan, 24, hossz/24);             
+AT1=AT1';
+RO1=reshape(HUROmeres_without_nan, 24, hossz/24);             
+RO1=RO1';
+RS1=reshape(HURSmeres_without_nan, 24, hossz/24);             
+RS1=RS1';
+HR1=reshape(HUHRmeres_without_nan, 24, hossz/24);             
+HR1=HR1';
+nap=reshape(DayNumber, 24, hossz/24);             
 nap=nap';
 
-kimenet2 = Ar1(1:3,:);     % Ezek a jósolt adatok
-Hiba2 = mean(abs(Ar1(1,:) - Ar1(1,:)));
-Hiba2 =[Hiba2; mean(abs(Ar1(2,:) - Ar1(2,:)))];
-Hiba2 =[Hiba2; mean(abs(Ar1(3,:) - Ar1(3,:)))];
-TalaltNap = [nap(1,1); nap(2,1); nap(3,1)];
-Sorszam = [0;1;2]; % Keresett nap helye az eredti Ar tömben
-NapPar = [nap(1,1), nap(1,1), nap(1,1); nap(2,1), nap(2,1), nap(2,1); nap(3,1), nap(3,1), nap(3,1)];
-for nn=3:365,
+p=7;
+
+kimenet2 = Ar1(1:p,:);     % Ezek a jósolt adatok
+Hiba2 = zeros(p,1);
+TalaltNap = zeros(p,1);
+Sorszam = zeros(p,1); % Keresett nap helye az eredti Ar tömben
+NapPar = ones(p,3);
+for nn = p : hossz/24 -1,
     % Ha mondjuk márc 5 az utolsó ismert adat akkor, az fog a ma változóba
     % kerülni
     % míg a xxR nevû mátrixban az évben márc 4 nn ismert adatok kerülnek
@@ -48,6 +47,13 @@ for nn=3:365,
     SKR = SK1(1:nn-1,:);        % SK = Szolvákia felöl érkezõ áram
     maBr = Br1(nn,:);
     BrR = Br1(1:nn-1,:);         % Br = Bruttó hazai áram termelés
+    UKR = UK1(1:nn-1, :);
+    ATR = AT1(1:nn-1, :);
+    ROR = RO1(1:nn-1, :);
+    RSR = RS1(1:nn-1, :);
+    HRR = HR1(1:nn-1, :);
+    napR = nap(1:nn-1, :);   
+    tegnap = Ar1(nn-1,:);
 
     % Megkeressük a legkisebb hibáju napot
     % Relatív hibát számolok az eddnn adatok és az utolsó ismert adat között  
@@ -58,35 +64,35 @@ for nn=3:365,
     tmpBr = abs(BrR - ones(nn-1,1)*maBr);
     [Brminimum, Brhely] = min(sum(tmpBr,2));
     
-    m = [Arminimum, Brminimum, SKminimum];
+    m = [Arminimum, Brminimum];
     minimumok = esort(m);    % sorba rendezzük a minimumokat
                              % a legkisebb kerül a sorvégére
     
     % Megkeresem a második leghasonlóbbat
-    tmp2 = [tmpAr(1:Arhely-1,:);tmpAr(Arhely+1:nn-1,:)];
-    [Arminimum2, Arhely2] = min(sum(tmp2,2));
-    tmp2 = [tmpSK(1:SKhely-1,:);tmpSK(SKhely+1:nn-1,:)];
-    [SKminimum2, SKhely2] = min(sum(tmp2,2));
-    tmp2 = [tmpBr(1:Brhely-1,:);tmpBr(Brhely+1:nn-1,:)];
-    [Brminimum2, Brhely2] = min(sum(tmp2,2));
+    tmpAr(Arhely,:) = 10000;
+    [Arminimum2, Arhely2] = min(sum(tmpAr,2));
+    tmpSK(SKhely,:) = 10000;
+    [SKminimum2, SKhely2] = min(sum(tmpSK,2));
+    tmpBr(Brhely,:) = 10000;
+    [Brminimum2, Brhely2] = min(sum(tmpBr,2));
     
-    m2 = [Arminimum2, Brminimum2, SKminimum2];
+    m2 = [Arminimum2, Brminimum2];
     AtlagArany = m + m2;
     minimumokArany = esort(AtlagArany);
     
     % Atalgot kimenet
     if ( minimumokArany(2) == minimumokArany(1)) 
        josoltAtlag = mean([Ar1(Arhely+1,:); Ar1(Arhely2+1,:)]); % akkor hozzá adunk a talált holnaphoz
-       NapPar = [NapPar; nap(nn), nap(Arhely+1,1), nap(Arhely2+1,1)];
+       NapPar = [NapPar; nap(nn,1), nap(Arhely+1,1), nap(Arhely2+1,1)];
     end
     if ( minimumokArany(2) == minimumokArany(2))  
         josoltAtlag = mean([Ar1(Brhely+1,:); Ar1(Brhely2+1,:)]); 
-        NapPar = [NapPar; nap(nn), nap(Brhely+1,1), nap(Brhely2+1,1)];
+        NapPar = [NapPar; nap(nn,1), nap(Brhely+1,1), nap(Brhely2+1,1)];
     end
-    if ( minimumokArany(2) == minimumokArany(3))  
-       josoltAtlag = mean([Ar1(SKhely+1,:); Ar1(SKhely2+1,:)]); 
-       NapPar = [NapPar; nap(nn), nap(SKhely+1,1), nap(SKhely2+1,1)];
-    end
+%     if ( minimumokArany(2) == minimumokArany(3))  
+%        josoltAtlag = mean([Ar1(SKhely+1,:); Ar1(SKhely2+1,:)]); 
+%        NapPar = [NapPar; nap(nn,1), nap(SKhely+1,1), nap(SKhely2+1,1)];
+%     end
     
     kimenet2 = [kimenet2; josoltAtlag];
     H = mean(abs(josoltAtlag - Ar1(nn+1,:)));
@@ -110,19 +116,26 @@ for ii = 1:size(NapPar,1)
         end
     end
             
-for ii = 1:size(NapPar,1)
-        Statisztika(NapPar(ii,1), NapPar(ii,2)) = Statisztika(NapPar(ii,1), NapPar(ii,2)) + 1;
-end;
-for ii = 1:size(NapPar,1)
-        Statisztika2(NapPar(ii,1), NapPar(ii,3)) = Statisztika2(NapPar(ii,1), NapPar(ii,3)) + 1;
-end;
-Darab = [sum(TalaltNap==1); sum(TalaltNap==2); sum(TalaltNap==3); ...
-        sum(TalaltNap==4); sum(TalaltNap==5); sum(TalaltNap==6); ...
-        sum(TalaltNap==7); sum(TalaltNap==13); sum(TalaltNap==15); ...
-        sum(TalaltNap==17)];
+% for ii = 1:size(NapPar,1)
+%         Statisztika(NapPar(ii,1), NapPar(ii,2)) = Statisztika(NapPar(ii,1), NapPar(ii,2)) + 1;
+% end;
+% for ii = 1:size(NapPar,1)
+%         Statisztika2(NapPar(ii,1), NapPar(ii,3)) = Statisztika2(NapPar(ii,1), NapPar(ii,3)) + 1;
+% end;
 
-% MeanAbsoluteError = mae(Ar1, kimenet);
-% display(MeanAbsoluteError);
 MAE = mean(abs(Ar1-kimenet2));
 MM = mean(MAE);
 display(MM);
+
+kimenet_vector_2atlaga = reshape(kimenet2', hossz, 1);
+display(mae(arak_without_nan(p*24:hossz,1), kimenet_vector_2atlaga(p*24:hossz,1)));
+display(mse(arak_without_nan(p*24:hossz,1), kimenet_vector_2atlaga(p*24:hossz,1)));
+
+abserror = abs(Ar1(p+1:hossz/24,1:24)-kimenet2(p+1:hossz/24,1:24));
+sumabserror = sum(abserror,2);
+ss = sum(sumabserror);
+atlag = mean(abserror);
+ae = reshape(abserror', 1, size(abserror,1)*size(abserror,2));
+uj3 = kimenet_vector_2atlaga(p*24+1:hossz,1);
+relerror = ae/uj3'*100;
+display(relerror);
