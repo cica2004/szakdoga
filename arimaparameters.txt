@@ -1,0 +1,130 @@
+Mdl_ar_06_03_02_01__03_sar_09999 = arima('AR',{0.6,0.3,0.2,0.1,-0.3}, 'SAR', 0.9999,'SARLags', 24*7);
+EstMdl_ar_06_03_02_01__03_sar_09999 = estimate(Mdl_ar_06_03_02_01__03_sar_09999, arak_without_nan(1:24*2050, :));
+F_ar_06_03_02_01__03_sar_09999 = forecast(EstMdl_ar_06_03_02_01__03_sar_09999, 24*20, 'Y0', arak_without_nan(1:24*2050, :));
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_03_02_01__03_sar_09999).^2)
+
+Mdl_02lag24_7_0_0 = arima('AR',{0.2},'SAR', 0.9,'SARLags', 24*7, 'D', 0);
+Mdl_ar_06_02__01_sar_09 = arima('AR',{0.6,0.2,-0.1}, 'SAR', 0.9,'SARLags', 24*7);
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_039_0009_sar_0999).^2)
+pmse =
+   1.0263e+03
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_039_sar_099).^2)
+pmse =
+  461.9007
+
+Mdl_ar_06_03__01_sar_0999 = arima('AR',{0.6,0.3,-0.1}, 'SAR', 0.999,'SARLags', 24*7);
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_02__01_sar_09).^2)
+pmse =
+  330.9795
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_03__01_sar_0999).^2)
+ 
+    ARIMA(3,0,0) Model with Seasonal AR(168):
+    -----------------------------------------
+    Conditional Probability Distribution: Gaussian
+
+                                  Standard          t     
+     Parameter       Value          Error       Statistic 
+    -----------   -----------   ------------   -----------
+     Constant      0.0201492     0.0473564       0.425481
+        AR{1}            0.6         Fixed          Fixed 
+        AR{2}            0.3         Fixed          Fixed 
+        AR{3}           -0.1         Fixed          Fixed 
+      SAR{168}          0.999         Fixed          Fixed
+     Variance        110.332      0.247103        446.501
+
+pmse =
+  343.5244
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_02_01_sar_0999).^2)
+ 
+    ARIMA(3,0,0) Model with Seasonal AR(168):
+    -----------------------------------------
+    Conditional Probability Distribution: Gaussian
+
+                                  Standard          t     
+     Parameter       Value          Error       Statistic 
+    -----------   -----------   ------------   -----------
+     Constant      0.0104695     0.0471479       0.222056
+        AR{1}            0.6         Fixed          Fixed 
+        AR{2}            0.2         Fixed          Fixed 
+        AR{3}            0.1         Fixed          Fixed 
+      SAR{168}          0.999         Fixed          Fixed
+     Variance        109.365      0.244525        447.254
+
+pmse =
+
+  356.4305
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_03_01__01_sar_09999).^2)
+ 
+    ARIMA(4,0,0) Model with Seasonal AR(168):
+    -----------------------------------------
+    Conditional Probability Distribution: Gaussian
+
+                                  Standard          t     
+     Parameter       Value          Error       Statistic 
+    -----------   -----------   ------------   -----------
+     Constant     0.00629963     0.0480542       0.131094
+        AR{1}            0.6         Fixed          Fixed 
+        AR{2}            0.3         Fixed          Fixed 
+        AR{3}            0.1         Fixed          Fixed 
+        AR{4}           -0.1         Fixed          Fixed 
+      SAR{168}         0.9999         Fixed          Fixed
+     Variance        113.611      0.256587        442.776
+
+pmse =
+
+  354.1447
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_02_02__01_sar_09999).^2)
+
+pmse =
+
+  354.7276
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_02_02__01__01_sar_09999).^2)
+ 
+    ARIMA(5,0,0) Model with Seasonal AR(168):
+    -----------------------------------------
+    Conditional Probability Distribution: Gaussian
+
+                                  Standard          t     
+     Parameter       Value          Error       Statistic 
+    -----------   -----------   ------------   -----------
+     Constant      0.0122171     0.0483764       0.252543
+        AR{1}            0.6         Fixed          Fixed 
+        AR{2}            0.2         Fixed          Fixed 
+        AR{3}            0.2         Fixed          Fixed 
+        AR{4}           -0.1         Fixed          Fixed 
+        AR{5}           -0.1         Fixed          Fixed 
+      SAR{168}         0.9999         Fixed          Fixed
+     Variance        115.142      0.261581        440.177
+
+pmse =
+
+  342.5368
+
+pmse = mean((arak_without_nan(24*2050+1:49680, :)-F_ar_06_03_02_01__03_sar_09999).^2)
+ 
+    ARIMA(5,0,0) Model with Seasonal AR(168):
+    -----------------------------------------
+    Conditional Probability Distribution: Gaussian
+
+                                  Standard          t     
+     Parameter       Value          Error       Statistic 
+    -----------   -----------   ------------   -----------
+     Constant     0.00622507     0.0516254       0.120582
+        AR{1}            0.6         Fixed          Fixed 
+        AR{2}            0.3         Fixed          Fixed 
+        AR{3}            0.2         Fixed          Fixed 
+        AR{4}            0.1         Fixed          Fixed 
+        AR{5}           -0.3         Fixed          Fixed 
+      SAR{168}         0.9999         Fixed          Fixed
+     Variance        131.125      0.312724          419.3
+
+pmse =
+
+  346.3821

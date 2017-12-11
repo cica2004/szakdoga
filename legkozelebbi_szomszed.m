@@ -5,18 +5,20 @@ Ar1=Ar1';
 ellenorzes = reshape(Ar1', hossz, 1);
 Br1=reshape(RendszerTerheles, 24, hossz/24);             
 Br1=Br1';
-SK1=reshape(HUSKmeres_without_nan, 24, hossz/24);             
-SK1=SK1';
-UK1=reshape(HUUKmeres_without_nan, 24, hossz/24);             
-UK1=UK1';
-AT1=reshape(HUATmeres_without_nan, 24, hossz/24);             
-AT1=AT1';
-RO1=reshape(HUROmeres_without_nan, 24, hossz/24);             
-RO1=RO1';
-RS1=reshape(HURSmeres_without_nan, 24, hossz/24);             
-RS1=RS1';
-HR1=reshape(HUHRmeres_without_nan, 24, hossz/24);             
-HR1=HR1';
+% SK1=reshape(HUSKmeres_without_nan, 24, hossz/24);             
+% SK1=SK1';
+% UK1=reshape(HUUKmeres_without_nan, 24, hossz/24);             
+% UK1=UK1';
+% AT1=reshape(HUATmeres_without_nan, 24, hossz/24);             
+% AT1=AT1';
+% RO1=reshape(HUROmeres_without_nan, 24, hossz/24);             
+% RO1=RO1';
+% RS1=reshape(HURSmeres_without_nan, 24, hossz/24);             
+% RS1=RS1';
+% HR1=reshape(HUHRmeres_without_nan, 24, hossz/24);             
+% HR1=HR1';
+IE1=reshape(ImportExportTeny_without_Nan, 24, hossz/24);             
+IE1=IE1';
 nap=reshape(DayNumber, 24, hossz/24);             
 nap=nap';
 
@@ -30,12 +32,13 @@ ez_alapjan_dontott = repmat('er',[p,1]);
 kimenet = Ar1(1:p, :);     % Ezek a jósolt adatok
 for nn = p : hossz/24 -1,
     BrR = Br1(1:nn, :);
-    SKR = SK1(1:nn, :);
-    UKR = UK1(1:nn, :);
-    ATR = AT1(1:nn, :);
-    ROR = RO1(1:nn, :);
-    RSR = RS1(1:nn, :);
-    HRR = HR1(1:nn, :);
+%     SKR = SK1(1:nn, :);
+%     UKR = UK1(1:nn, :);
+%     ATR = AT1(1:nn, :);
+%     ROR = RO1(1:nn, :);
+%     RSR = RS1(1:nn, :);
+%     HRR = HR1(1:nn, :);
+    IER = IE1(1:nn, :);
     napR = nap(1:nn, :);   
     tegnap = Ar1(nn,:);
     
@@ -59,8 +62,19 @@ for nn = p : hossz/24 -1,
             end
     end
     
-    SKminimum = sum(abs(SKR(nn)));
-    SKhely = 1;
+    IEminimum = sum(abs(IER(nn)));
+    IEhely = 1;
+    for kk=1:nn-1,
+        tmp = sum(abs(IER(nn,:) - IER(kk,:)));
+            if (tmp < IEminimum)
+                IEminimum = tmp;
+                IEhely = kk;
+            end
+    end
+
+    
+%     SKminimum = sum(abs(SKR(nn)));
+%     SKhely = 1;
 %     for kk=1:nn-1,
 %         tmp = sum(abs(SKR(nn,:) - SKR(kk,:)));
 %             if (tmp < SKminimum)
@@ -69,8 +83,8 @@ for nn = p : hossz/24 -1,
 %             end
 %     end
 
-    UKminimum = sum(abs(UKR(nn)));
-    UKhely = 1;
+%     UKminimum = sum(abs(UKR(nn)));
+%     UKhely = 1;
 %     for kk=1:nn-1,
 %         tmp = sum(abs(UKR(nn,:) - UKR(kk,:)));
 %             if (tmp < UKminimum)
@@ -79,8 +93,8 @@ for nn = p : hossz/24 -1,
 %             end
 %     end
 
-    ATminimum = sum(abs(ATR(nn)));
-    AThely = 1;
+%     ATminimum = sum(abs(ATR(nn)));
+%     AThely = 1;
 %     for kk=1:nn-1,
 %         tmp = sum(abs(ATR(nn,:) - ATR(kk,:)));
 %             if (tmp < ATminimum)
@@ -89,8 +103,8 @@ for nn = p : hossz/24 -1,
 %             end
 %     end
 
-    ROminimum = sum(abs(ROR(nn)));
-    ROhely = 1;
+%     ROminimum = sum(abs(ROR(nn)));
+%     ROhely = 1;
 %     for kk=1:nn-1,
 %         tmp = sum(abs(ROR(nn,:) - ROR(kk,:)));
 %             if (tmp < ROminimum)
@@ -99,8 +113,8 @@ for nn = p : hossz/24 -1,
 %             end
 %     end
     
-    RSminimum = sum(abs(RSR(nn)));
-    RShely = 1;
+%     RSminimum = sum(abs(RSR(nn)));
+%     RShely = 1;
 %     for kk=1:nn-1,
 %         tmp = sum(abs(RSR(nn,:) - RSR(kk,:)));
 %             if (tmp < RSminimum)
@@ -109,8 +123,8 @@ for nn = p : hossz/24 -1,
 %             end
 %     end
 
-    HRminimum = sum(abs(HRR(nn)));
-    HRhely = 1;
+%     HRminimum = sum(abs(HRR(nn)));
+%     HRhely = 1;
 %     for kk=1:nn-1,
 %         tmp = sum(abs(HRR(nn,:) - HRR(kk,:)));
 %             if (tmp < HRminimum)
@@ -119,7 +133,7 @@ for nn = p : hossz/24 -1,
 %             end
 %     end
 
-    m = [Arminimum];
+    m = [Arminimum, IEminimum, Brminimum];
     %display(length(minimumok));
     minimumok = esort(m);
     
@@ -140,54 +154,62 @@ for nn = p : hossz/24 -1,
         ez_alapjan_dontott = d_uj;
     end
     
-    if ( minimumok(length(minimumok)) == SKminimum)  
-        uj2 = [kimenet; Ar1((SKhely+1),:)];
+%     if ( minimumok(length(minimumok)) == SKminimum)  
+%         uj2 = [kimenet; Ar1((SKhely+1),:)];
+%         kimenet = uj2;
+%         d = repmat('SK',[1,1]);
+%         d_uj = [ez_alapjan_dontott; d];
+%         ez_alapjan_dontott = d_uj;
+%     end
+% 
+%     if ( minimumok(length(minimumok)) == UKminimum)  
+%         uj2 = [kimenet; Ar1((UKhely+1),:)];
+%         kimenet = uj2;
+%         d = repmat('UK',[1,1]);
+%         d_uj = [ez_alapjan_dontott; d];
+%         ez_alapjan_dontott = d_uj;
+%     end
+% 
+%     if ( minimumok(length(minimumok)) == ATminimum)  
+%         uj2 = [kimenet; Ar1((AThely+1),:)];
+%         kimenet = uj2;
+%         d = repmat('AT',[1,1]);
+%         d_uj = [ez_alapjan_dontott; d];
+%         ez_alapjan_dontott = d_uj;
+%     end
+% 
+%     if ( minimumok(length(minimumok)) == ROminimum)  
+%         uj2 = [kimenet; Ar1((ROhely+1),:)];
+%         kimenet = uj2;
+%         d = repmat('RO',[1,1]);
+%         d_uj = [ez_alapjan_dontott; d];
+%         ez_alapjan_dontott = d_uj;
+%     end
+% 
+%     if ( minimumok(length(minimumok)) == RSminimum)  
+%         uj2 = [kimenet; Ar1((RShely+1),:)];
+%         kimenet = uj2;
+%         d = repmat('RS',[1,1]);
+%         d_uj = [ez_alapjan_dontott; d];
+%         ez_alapjan_dontott = d_uj;
+%     end
+% 
+%     if ( minimumok(length(minimumok)) == HRminimum)  
+%         uj2 = [kimenet; Ar1((HRhely+1),:)];
+%         kimenet = uj2;
+%         d = repmat('HR',[1,1]);
+%         d_uj = [ez_alapjan_dontott; d];
+%         ez_alapjan_dontott = d_uj;
+%     end
+    
+    if ( minimumok(length(minimumok)) == IEminimum)  
+        uj2 = [kimenet; Ar1((IEhely+1),:)];
         kimenet = uj2;
-        d = repmat('SK',[1,1]);
+        d = repmat('IE',[1,1]);
         d_uj = [ez_alapjan_dontott; d];
         ez_alapjan_dontott = d_uj;
     end
-
-    if ( minimumok(length(minimumok)) == UKminimum)  
-        uj2 = [kimenet; Ar1((UKhely+1),:)];
-        kimenet = uj2;
-        d = repmat('UK',[1,1]);
-        d_uj = [ez_alapjan_dontott; d];
-        ez_alapjan_dontott = d_uj;
-    end
-
-    if ( minimumok(length(minimumok)) == ATminimum)  
-        uj2 = [kimenet; Ar1((AThely+1),:)];
-        kimenet = uj2;
-        d = repmat('AT',[1,1]);
-        d_uj = [ez_alapjan_dontott; d];
-        ez_alapjan_dontott = d_uj;
-    end
-
-    if ( minimumok(length(minimumok)) == ROminimum)  
-        uj2 = [kimenet; Ar1((ROhely+1),:)];
-        kimenet = uj2;
-        d = repmat('RO',[1,1]);
-        d_uj = [ez_alapjan_dontott; d];
-        ez_alapjan_dontott = d_uj;
-    end
-
-    if ( minimumok(length(minimumok)) == RSminimum)  
-        uj2 = [kimenet; Ar1((RShely+1),:)];
-        kimenet = uj2;
-        d = repmat('RS',[1,1]);
-        d_uj = [ez_alapjan_dontott; d];
-        ez_alapjan_dontott = d_uj;
-    end
-
-    if ( minimumok(length(minimumok)) == HRminimum)  
-        uj2 = [kimenet; Ar1((HRhely+1),:)];
-        kimenet = uj2;
-        d = repmat('HR',[1,1]);
-        d_uj = [ez_alapjan_dontott; d];
-        ez_alapjan_dontott = d_uj;
-    end
-
+    
 end
 
 kimenet_vector_1szomszed = reshape(kimenet', hossz, 1);

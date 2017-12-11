@@ -1,4 +1,5 @@
-x=1:size(y,2);
+y = orankenti_mean_mse';
+x = 1:size(y,2);
 numberOfBars = size(y,2);
 barFontSize = 15;
 
